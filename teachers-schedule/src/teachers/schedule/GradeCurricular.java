@@ -7,10 +7,12 @@ package teachers.schedule;
  */
 
 
+import Jama.Matrix;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import org.jopendocument.dom.spreadsheet.MutableCell;
 import org.jopendocument.dom.spreadsheet.Sheet;
@@ -127,6 +129,8 @@ public class GradeCurricular {
 
         return c;
     }
+    
+
 
     public static Boolean disciplinasprofessores() {
         int qtd = 0;
@@ -155,14 +159,35 @@ public class GradeCurricular {
             for (Professor p : GradeCurricular.professores) {
                if (GradeCurricular.professorTemDisciplinaNoPeriodo(p, periodo.getNumero())) {
                     System.out.println(periodo.getNumero() + " " +p.getNome());
-                    periodo.setDisponibilidade(GradeCurricular.somaMatriz(p.getDisponibilidade(), periodo.getDisponibilidade()));
+                    Integer c[][] = GradeCurricular.somaMatriz(p.getDisponibilidade(), periodo.getDisponibilidade());
+                    periodo.setDisponibilidade(c);
                 }
                 
             }
+            //System.out.println(Arrays.deepToString(periodo.getDisponibilidade())+periodo.getNumero()+" ");
             System.out.println();
         }
 
         
+    }
+    
+    private static void disponibilidadesPeriodoMostrar(int p){
+       Integer disponibilidade[][] = GradeCurricular.periodos[p].getDisponibilidade();
+        System.out.println("Seg  Ter Quar  Qui  Sex  Sab");
+        for (int i = 0; i < disponibilidade.length; i++) {
+            for(int j=0;j< disponibilidade[0].length;j++){
+                System.out.print(disponibilidade[i][j]+"    ");
+            }
+            System.out.println();
+        }
+    }
+    
+    public static void mostrarDisponibilidadesPeriodo(){
+        for(int i=0;i<GradeCurricular.periodos.length;i++){
+            System.out.println((i+1) + "º Periodo");
+            GradeCurricular.disponibilidadesPeriodoMostrar(i);
+            System.out.println();
+        }
     }
 
     public static void periodos(int n) {

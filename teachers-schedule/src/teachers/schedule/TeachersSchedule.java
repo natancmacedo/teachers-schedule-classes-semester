@@ -6,6 +6,7 @@
 package teachers.schedule;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 /**
  *
@@ -15,16 +16,21 @@ public class TeachersSchedule {
 
     /**
      * @param args the command line arguments
+     * @throws java.io.IOException
      */
     public static void main(String[] args) throws IOException {
-                GradeCurricular.LerProfessores("../dados/Professores.ods");
+               GradeCurricular.LerProfessores("../dados/Professores.ods");
         GradeCurricular.LerDisciplinas("../dados/DadosDisciplinas.ods");
         //GradeCurricular.mostrarDisciplinas();
         
        GradeCurricular.periodos(9);
        GradeCurricular.disponibilidadesPeriodo();
+       GradeCurricular.mostrarDisponibilidadesPeriodo();
        // System.out.println(t);
        System.out.println(     GradeCurricular.disciplinasprofessores());
+       
+      
+       
        
       //  GradeCurricular.mostrarProfessores();
     }
