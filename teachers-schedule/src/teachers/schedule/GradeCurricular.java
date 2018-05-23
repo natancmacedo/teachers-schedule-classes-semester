@@ -5,14 +5,10 @@ package teachers.schedule;
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
-
-import Jama.Matrix;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import org.jopendocument.dom.spreadsheet.MutableCell;
 import org.jopendocument.dom.spreadsheet.Sheet;
@@ -20,16 +16,39 @@ import org.jopendocument.dom.spreadsheet.SpreadSheet;
 
 /**
  *
- * @author Natan Macedoo <natancmacedo@gmail.com>
+ * @author Natan Macedo <natancmacedo@gmail.com>
  */
 public class GradeCurricular {
 
-    public static ArrayList<Professor> professores = new ArrayList<>();
-    public static ArrayList<Disciplina> disciplinas = new ArrayList<>();
-    public static Integer qtdperiodos;
-    public static Periodo[] periodos;
+    private ArrayList<Professor> professores = new ArrayList<>();
+    private ArrayList<Disciplina> disciplinas = new ArrayList<>();
+    private Integer qtdperiodos;
+    private Periodo[] periodos;
+    private Restricao[] restricoes;
 
-    public static void LerDisciplinas(String fileName) throws IOException {
+
+    public GradeCurricular(Integer qtdperiodos) {
+        this.qtdperiodos = qtdperiodos;
+        this.periodos = new Periodo[this.qtdperiodos];
+        this.restricoes = new Restricao[qtdperiodos];
+        for (int i = 0; i < this.qtdperiodos; i++) {
+            this.periodos[i] = new Periodo(i + 1);
+            this.restricoes[i] = new Restricao();
+        }
+    }
+
+    /**
+     * Lê os arquivos passados
+     * @param pathArquivoProfessor
+     * @param pathArquivoDisciplinas
+     * @throws IOException
+     */
+    public void inicializar(String pathArquivoProfessor, String pathArquivoDisciplinas) throws IOException {
+        this.LerProfessores(pathArquivoProfessor);
+        this.LerDisciplinas(pathArquivoDisciplinas);
+    }
+
+    private void LerDisciplinas(String fileName) throws IOException {
         Sheet sheet;
         File file = new File(fileName);
         sheet = SpreadSheet.createFromFile(file).getFirstSheet();
@@ -54,34 +73,15 @@ public class GradeCurricular {
                 break;
             }
 
-            GradeCurricular.disciplinas.add(new Disciplina((String) codigo.getValue(), (String) nome.getValue(),
-                    GradeCurricular.converteNumeroDocumento(creditos), GradeCurricular.converteNumeroDocumento(periodo)));
+            this.disciplinas.add(new Disciplina((String) codigo.getValue(), (String) nome.getValue(),
+                    this.converteNumeroDocumento(creditos), this.converteNumeroDocumento(periodo)));
 
-            GradeCurricular.InsereProfessorDisciplina(GradeCurricular.disciplinas.get(GradeCurricular.disciplinas.size() - 1), (String) professor.getValue());
+            this.InsereProfessorDisciplina(this.disciplinas.get(this.disciplinas.size() - 1), (String) professor.getValue());
 
         }
     }
 
-    public static void InsereProfessorDisciplina(Disciplina d, String professorNome) {
-        int qtdnotfound = 0;
-        for (Professor professor : GradeCurricular.professores) {
-            if (professor.getNome().equals(professorNome)) {
-                professor.getDisciplinas().add(d);
-            } else {
-                qtdnotfound++;
-            }
-        }
-        if (qtdnotfound >= GradeCurricular.professores.size()) {
-            System.out.println(d);
-        }
-    }
-
-    public static Integer converteNumeroDocumento(MutableCell value) {
-        BigDecimal valueBD = (BigDecimal) value.getValue();
-        return valueBD.intValue();
-    }
-
-    public static void LerProfessores(String fileName) throws IOException {
+    private void LerProfessores(String fileName) throws IOException {
         Sheet sheet;
         File file = new File(fileName);
         sheet = SpreadSheet.createFromFile(file).getFirstSheet();
@@ -101,25 +101,44 @@ public class GradeCurricular {
 
             // System.out.println(classe.getValueType());
             String nome = (String) professor.getValue();
-            Integer classe1 = GradeCurricular.converteNumeroDocumento(classe);
-            GradeCurricular.professores.add(new Professor(nome, classe1));
+            Integer classe1 = this.converteNumeroDocumento(classe);
+            this.professores.add(new Professor(nome, classe1));
 
         }
     }
 
-    public static void mostrarProfessores() {
-        for (int i = 0; i < GradeCurricular.professores.size(); i++) {
-            System.out.println(GradeCurricular.professores.get(i));
+    public void InsereProfessorDisciplina(Disciplina d, String professorNome) {
+        int qtdnotfound = 0;
+        for (Professor professor : this.professores) {
+            if (professor.getNome().equals(professorNome)) {
+                professor.getDisciplinas().add(d);
+            } else {
+                qtdnotfound++;
+            }
         }
-    }
-
-    public static void mostrarDisciplinas() {
-        for (Disciplina d : GradeCurricular.disciplinas) {
+        if (qtdnotfound >= this.professores.size()) {
             System.out.println(d);
         }
     }
 
-    public static Integer[][] somaMatriz(Integer a[][], Integer b[][]) {
+    public Integer converteNumeroDocumento(MutableCell value) {
+        BigDecimal valueBD = (BigDecimal) value.getValue();
+        return valueBD.intValue();
+    }
+
+    public void mostrarProfessores() {
+        for (int i = 0; i < this.professores.size(); i++) {
+            System.out.println(this.professores.get(i));
+        }
+    }
+
+    public void mostrarDisciplinas() {
+        for (Disciplina d : this.disciplinas) {
+            System.out.println(d);
+        }
+    }
+
+    private Integer[][] somaMatriz(Integer a[][], Integer b[][]) {
         Integer c[][] = new Integer[a.length][a[0].length];
         for (int i = 0; i < a.length; i++) {
             for (int j = 0; j < a[0].length; j++) {
@@ -129,72 +148,65 @@ public class GradeCurricular {
 
         return c;
     }
-    
 
-
-    public static Boolean disciplinasprofessores() {
+    public Boolean disciplinasprofessores() {
         int qtd = 0;
 
-        for (Professor p : GradeCurricular.professores) {
+        for (Professor p : this.professores) {
             qtd += p.getDisciplinas().size();
         }
 
-        return qtd == GradeCurricular.disciplinas.size();
+        return qtd == this.disciplinas.size();
     }
 
-    public static Boolean professorTemDisciplinaNoPeriodo(Professor p, Integer periodo) {
+    public Boolean professorTemDisciplinaNoPeriodo(Professor p, Integer periodo) {
         ArrayList<Disciplina> dprof = p.getDisciplinas();
 
         for (Disciplina d : dprof) {
-            if(d.getPeriodo().equals(periodo)){
+            if (d.getPeriodo().equals(periodo)) {
                 return true;
             }
         }
         return false;
     }
 
-    public static void disponibilidadesPeriodo() {
-        
-        for (Periodo periodo : GradeCurricular.periodos) {
-            for (Professor p : GradeCurricular.professores) {
-               if (GradeCurricular.professorTemDisciplinaNoPeriodo(p, periodo.getNumero())) {
-                    System.out.println(periodo.getNumero() + " " +p.getNome());
-                    Integer c[][] = GradeCurricular.somaMatriz(p.getDisponibilidade(), periodo.getDisponibilidade());
-                    periodo.setDisponibilidade(c);
+    public void disponibilidadesPeriodo() {
+
+        for (Periodo periodo : this.periodos) {
+            for (Professor p : this.professores) {
+                if (this.professorTemDisciplinaNoPeriodo(p, periodo.getNumero())) {
+                    System.out.println(periodo.getNumero() + " " + p.getNome());
+                    this.restricoes[periodo.getNumero()].somaRestricao(p.getDisponibilidade());
+                  //  double c[][] = this.somaMatriz(p.getDisponibilidade(), periodo.getDisponibilidade());
+                    //periodo.setDisponibilidade(c);
                 }
-                
+
             }
             //System.out.println(Arrays.deepToString(periodo.getDisponibilidade())+periodo.getNumero()+" ");
             System.out.println();
         }
 
-        
     }
-    
-    private static void disponibilidadesPeriodoMostrar(int p){
-       Integer disponibilidade[][] = GradeCurricular.periodos[p].getDisponibilidade();
+
+   /* private void disponibilidadesPeriodoMostrar(int p) {
+        double disponibilidade[][] = this.periodos[p].getDisponibilidade();
         System.out.println("Seg  Ter Quar  Qui  Sex  Sab");
         for (int i = 0; i < disponibilidade.length; i++) {
-            for(int j=0;j< disponibilidade[0].length;j++){
-                System.out.print(disponibilidade[i][j]+"    ");
+            for (int j = 0; j < disponibilidade[0].length; j++) {
+                System.out.print(disponibilidade[i][j] + "    ");
             }
             System.out.println();
         }
-    }
-    
-    public static void mostrarDisponibilidadesPeriodo(){
-        for(int i=0;i<GradeCurricular.periodos.length;i++){
-            System.out.println((i+1) + "º Periodo");
-            GradeCurricular.disponibilidadesPeriodoMostrar(i);
+    }*/
+
+    public void mostrarDisponibilidadesPeriodo() {
+        for (int i = 0; i < this.periodos.length; i++) {
+            System.out.println((i + 1) + "º Periodo");
+       //     this.disponibilidadesPeriodoMostrar(i);
             System.out.println();
         }
     }
 
-    public static void periodos(int n) {
-        GradeCurricular.periodos = new Periodo[n];
-        for (int i = 0; i < n; i++) {
-            GradeCurricular.periodos[i] = new Periodo(i + 1);
-        }
-    }
+
 
 }

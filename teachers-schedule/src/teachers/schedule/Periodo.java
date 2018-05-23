@@ -14,28 +14,23 @@ package teachers.schedule;
 public class Periodo {
     private Integer numero;
     private Disciplina disciplinas[][];
-    private Integer disponibilidade[][];
-
 
     public Periodo(Integer numero) {
         this.numero = numero;
         this.disciplinas = new Disciplina[5][6];
-        this.disponibilidade = TipoDisponibilidade.classe(0);
+        
     }
 
     public Integer getNumero() {
         return numero;
     }
 
-    public Integer[][] getDisponibilidade() {
-        return disponibilidade;
+    public Disciplina[][] getDisciplinas() {
+        return disciplinas;
     }
 
-    public void setDisponibilidade(Integer[][] disponibilidade) {
-        this.disponibilidade = disponibilidade;
+    public void setDisciplinas(Disciplina[][] disciplinas) {
+        this.disciplinas = disciplinas;
     }
-    
-    
-     
-    
+   
 }

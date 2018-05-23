@@ -7,6 +7,7 @@ package teachers.schedule;
  */
 
 
+import Jama.Matrix;
 import java.util.ArrayList;
 
 /**
@@ -16,7 +17,7 @@ import java.util.ArrayList;
 public class Professor {
 
     private String nome;
-    private Integer[][] disponibilidade;
+    private Matrix disponibilidade;
     private ArrayList<Disciplina> disciplinas = new ArrayList<>();
     public Professor(String nome, Integer classe) {
         this.nome = nome;
@@ -36,7 +37,7 @@ public class Professor {
         return disciplinas;
     }
 
-    public Integer[][] getDisponibilidade() {
+    public Matrix getDisponibilidade() {
         return disponibilidade;
     }
     
