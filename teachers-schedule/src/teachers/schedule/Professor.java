@@ -41,6 +41,15 @@ public class Professor {
         return disponibilidade;
     }
     
+    public Boolean professorDaAulaEmPeriodo(Integer periodo){
+        for(Disciplina d:this.disciplinas){
+            if(d.getPeriodo().equals(periodo)){
+                return true;
+            }
+        }
+        return false;
+    }
+    
     
 
 }

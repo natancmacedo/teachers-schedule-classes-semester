@@ -12,12 +12,18 @@ package teachers.schedule;
 public class Posicao {
     private Integer dia;
     private Integer hora;
-
-    public Posicao(Integer dia, Integer hora) {
+    private Integer periodo;
+    private Disciplina disciplina;
+    
+    
+    
+    public Posicao(Integer dia, Integer hora, Integer periodo) {
         this.dia = dia;
         this.hora = hora;
+        this.periodo = periodo;
     }
 
+    
     public Integer getDia() {
         return dia;
     }
@@ -33,6 +39,21 @@ public class Posicao {
     public void setHora(Integer hora) {
         this.hora = hora;
     }
-    
-    
+
+    public Integer getPeriodo() {
+        return periodo;
+    }
+
+    public void setPeriodo(Integer periodo) {
+        this.periodo = periodo;
+    }
+
+    public Disciplina getDisciplina() {
+        return disciplina;
+    }
+
+    public void setDisciplina(Disciplina disciplina) {
+        this.disciplina = disciplina;
+    }
+
 }

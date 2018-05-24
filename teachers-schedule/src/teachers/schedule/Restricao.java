@@ -15,16 +15,16 @@ public class Restricao {
 
     private Matrix disponibilidade;
 
-    public Restricao() {
-        this.disponibilidade = null;
-    }
-
     public Restricao(Matrix dispoMatrix) {
         this.disponibilidade = dispoMatrix;
     }
-    
-    public Restricao(double[][] dispoMatrix){
+
+    public Restricao(double[][] dispoMatrix) {
         this.disponibilidade = new Matrix(dispoMatrix);
+    }
+
+    public Matrix getDisponibilidade() {
+        return disponibilidade;
     }
 
     public void somaRestricao(Matrix disponibilidade) {
@@ -34,8 +34,18 @@ public class Restricao {
     public void zeraRestricao() {
         this.disponibilidade.timesEquals(0);
     }
-    
-    public void mostrarRestricao(){
-        
+
+    public void mostrarRestricao() {
+
+        double disponibilidadeDouble[][] = this.disponibilidade.getArray();
+        System.out.println("Seg  Ter Quar  Qui  Sex  Sab");
+        for (int i = 0; i < disponibilidadeDouble.length; i++) {
+            for (int j = 0; j < disponibilidadeDouble[0].length; j++) {
+                System.out.print(disponibilidadeDouble[i][j] + "    ");
+            }
+            System.out.println();
+        }
     }
+    
+    
 }

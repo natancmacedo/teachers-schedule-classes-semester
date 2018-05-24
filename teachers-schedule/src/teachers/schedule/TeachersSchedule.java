@@ -6,8 +6,7 @@
 package teachers.schedule;
 
 import java.io.IOException;
-import java.util.Arrays;
-import Jama.Matrix;
+
 /**
  *
  * @author natan
@@ -21,23 +20,10 @@ public class TeachersSchedule {
     public static void main(String[] args) throws IOException {
         GradeCurricular teste = new GradeCurricular(9); //9 periodos;
         teste.inicializar("../dados/Professores.ods", "../dados/DadosDisciplinas.ods");
+        teste.mostrarDisponibilidadesPeriodo();
+       
+        teste.procuraEInsercao();
 
-        
-        /*
-        
-       teste.periodos(9);
-       teste.disponibilidadesPeriodo();
-       teste.mostrarDisponibilidadesPeriodo();
-       // System.out.println(t);
-       System.out.println(     teste.disciplinasprofessores());
-       
-      
-       
-       
-      //  GradeCurricular.mostrarProfessores();*/
-        
-
-        
     }
-    
+
 }
