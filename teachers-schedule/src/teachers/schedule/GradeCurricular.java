@@ -427,6 +427,7 @@ public class GradeCurricular {
 
                     this.zeraRestricoes();
                     this.calculaRestricoes();
+                    this.mostrarDisponibilidadesPeriodo(disciplina.getPeriodo());
                 }
                 gradeResolvida = this.todasDisciplinasForamInseridas();
                 disciplinasInserir = this.disciplinasAInserir();
