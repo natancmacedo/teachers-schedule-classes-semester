@@ -5,25 +5,32 @@
  */
 package teachers.schedule;
 
+import java.util.ArrayList;
+
 /**
  *
  * @author natan
  */
-public class Posicao {
+public class Horario {
+
     private Integer dia;
     private Integer hora;
     private Integer periodo;
     private Disciplina disciplina;
-    
-    
-    
-    public Posicao(Integer dia, Integer hora, Integer periodo) {
+
+    public Horario(Integer dia, Integer hora, Integer periodo) {
         this.dia = dia;
         this.hora = hora;
         this.periodo = periodo;
     }
 
-    
+    public Horario(Integer dia, Integer hora, Integer periodo, Disciplina disciplina) {
+        this.dia = dia;
+        this.hora = hora;
+        this.periodo = periodo;
+        this.disciplina = disciplina;
+    }
+
     public Integer getDia() {
         return dia;
     }
@@ -54,6 +61,14 @@ public class Posicao {
 
     public void setDisciplina(Disciplina disciplina) {
         this.disciplina = disciplina;
+    }
+
+    public static ArrayList<Horario> montaHorario(Integer periodo, Integer dia, Integer horaInicio, Integer horaFinal, Disciplina disciplina) {
+        ArrayList<Horario> horarios = new ArrayList<>();
+        for (int i = horaInicio; i <= horaFinal; i++) {
+            horarios.add(new Horario(dia, i, periodo,disciplina));
+        }
+        return horarios;
     }
 
 }
