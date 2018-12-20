@@ -1,6 +1,5 @@
 package grade;
 
-import cplex.ProfessorNaoEncontratoException;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -190,8 +189,8 @@ public class ArquivoDados {
             }
         }
         try {
-            throw new ProfessorNaoEncontratoException(nomeProfessor, disciplina.getCodigo());
-        } catch (ProfessorNaoEncontratoException ex) {
+            throw new ProfessorNaoEncontradoException(nomeProfessor, disciplina.getCodigo());
+        } catch (ProfessorNaoEncontradoException ex) {
             Logger.getLogger(ArquivoDados.class.getName()).log(Level.SEVERE, null, ex);
         }
     }

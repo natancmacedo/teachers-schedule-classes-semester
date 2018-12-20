@@ -22,6 +22,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -44,119 +46,18 @@ public class TeacherScheduleProblem {
     private IloNumVar XDH[][];
     private double IDHdata[][];
 
-    public void begin() throws IloException, Exception {
+    public void begin() {
 
-        cplex = new IloCplex();
-        cplex.setParam(IloCplex.BooleanParam.PreInd, false);
-
-        XDH = new IloNumVar[grade.getDisciplinasNaoTotalmenteAlocadas().size()][config.getQuantidadeHorarios()];
-        IDHdata = new double[grade.getDisciplinasNaoTotalmenteAlocadas().size()][config.getQuantidadeHorarios()];
         preencheDicionario();
-        instanciaXDH();
-        instanciaIDHedataPreenche();
+        instanciaCplex();
+        setaParametroCplexPreSolucao();
+        criaInstanciaVariaveis();
+        criaInstanciaIndisponibilidade();
+        criaFuncaoObjetivo();
+        criaRestricoes();
 
-        IloLinearNumExpr objetive = cplex.linearNumExpr();
-
-        for (int j = 0; j < grade.getDisciplinasNaoTotalmenteAlocadas().size(); j++) {
-            for (int k = 0; k < config.getQuantidadeHorarios(); k++) {
-                objetive.addTerm(1, XDH[j][k]);
-            }
-        }
-
-        cplex.addMinimize(objetive);
-
-        //constraints
-        //restricao B
-        for (int k = 0; k < config.getQuantidadeHorarios(); k++) {
-            for (Professor professor : grade.getProfessores()) {
-                IloLinearNumExpr restricaoDisciplinasDoProfessorMesmoHorario = cplex.linearNumExpr();
-                for (Disciplina disciplina : professor.getDisciplinasNaoTotalmenteAlocadas()) {
-                    restricaoDisciplinasDoProfessorMesmoHorario.addTerm(XDH[disciplinaHorarios.get(disciplina.getCodigo())][k], 1);
-                }
-                cplex.addLe(restricaoDisciplinasDoProfessorMesmoHorario, 1).setName(professor.getNome() + "MesmoHorario");
-            }
-        }
-        //final restricao B
-
-        //restricao C
-        for (int k = 0; k < config.getQuantidadeHorarios(); k++) {
-            for (Periodo periodo : grade.getPeriodos()) {
-                IloLinearNumExpr restricaoDisciplinasDoPeriodoMesmoHorario = cplex.linearNumExpr();
-                for (Disciplina disciplina : grade.getDisciplinasNaoTotalmenteAlocadasEmUmPeriodo(periodo.getNumeroPeriodo())) {
-                    restricaoDisciplinasDoPeriodoMesmoHorario.addTerm(XDH[disciplinaHorarios.get(disciplina.getCodigo())][k], 1);
-                }
-                if (periodo.horarioEstaOcupado(conversor.converteIndiceEmHorario(k))) {
-                    cplex.addEq(restricaoDisciplinasDoPeriodoMesmoHorario, 0).setName(periodo.getNumeroPeriodo() + "MesmoHorario");
-                }
-                cplex.addLe(restricaoDisciplinasDoPeriodoMesmoHorario, 1).setName(periodo.getNumeroPeriodo() + "MesmoHorario");
-            }
-        }
-        //final restricao C
-
-        //restricao f
-        for (Disciplina disciplina : grade.getDisciplinasNaoTotalmenteAlocadas()) {
-            IloLinearNumExpr restricaoAlocacaoTotal = cplex.linearNumExpr();
-            for (int k = 0; k < config.getQuantidadeHorarios(); k++) {
-                restricaoAlocacaoTotal.addTerm(XDH[disciplinaHorarios.get(disciplina.getCodigo())][k], 1);
-            }
-            cplex.addEq(restricaoAlocacaoTotal, disciplina.getCreditosAAlocar()).setName(disciplina.getCodigo() + "AlocacaoTotal");
-        }
-        //final restricao f
-
-        IloLinearNumExpr restricaoA = cplex.linearNumExpr();
-        for (Disciplina disciplina : grade.getDisciplinasNaoTotalmenteAlocadas()) {
-            for (int k = 0; k < config.getQuantidadeHorarios(); k++) {
-                restricaoA.addTerm(XDH[disciplinaHorarios.get(disciplina.getCodigo())][k], IDHdata[disciplinaHorarios.get(disciplina.getCodigo())][k]);
-            }
-        }
-        cplex.addEq(restricaoA, 0).setName("IX");
-
-        //final restricao A
-        //restricao mesmo dia aula
-        for (Disciplina disciplina : grade.getDisciplinasNaoTotalmenteAlocadas()) {
-            for (int dia = 0; dia < config.quantidadeDias; dia++) {
-                IloLinearNumExpr restricaoAulaMesmoDia = cplex.linearNumExpr();
-                List<Horario> horariosMesmoDia = Horario.montaListaHorarios(dia, 0, config.quantidadeHoras - 1);
-                for (Horario horario : horariosMesmoDia) {
-                    restricaoAulaMesmoDia.addTerm(XDH[disciplinaHorarios.get(disciplina.getCodigo())][conversor.converteHorarioEmIndice(horario)], 1);
-                }
-                cplex.addLe(restricaoAulaMesmoDia, disciplina.quantidadeHorariosTentativaInsercao()).setName(disciplina.getCodigo() + "SameDay");
-            }
-        }
-
-        //restricao mesmo dia aula final
-        //restricao
-        cplex.exportModel("teacher.lp");
-
-        System.out.println(cplex.solve());
-
-        if (cplex.solve()) {
-            for (String key : disciplinaHorarios.keySet()) {
-                for (int k = 0; k < config.getQuantidadeHorarios(); k++) {
-                    int indexAcessoDisciplina = disciplinaHorarios.get(key);
-                    if (cplex.getValue(XDH[indexAcessoDisciplina][k]) == 1.0) {
-                        ArrayList<Horario> horarios = new ArrayList<>();
-                        horarios.add(conversor.converteIndiceEmHorario(k));
-
-                        Disciplina disciplina = grade.getDisciplinaPorCodigo(key);
-                        Integer numero = disciplina.getPeriodo();
-                        Periodo periodo = grade.getPeriodoPorNumero(disciplina.getPeriodo());
-                        Professor professor = grade.getProfessorDaDisciplina(disciplina);
-
-                        InsercaoGradeHorarios tentativa = new InsercaoGradeHorarios(professor, disciplina, horarios, periodo);
-
-                        grade.inserirDisciplinaNaGrade(new InsercaoGradeHorarios(professor, disciplina, horarios, periodo));
-
-                    }
-                }
-            }
-
-            if (grade.aSolucaoEstaPronta()) {
-                grade.gerarSaidaArquivo();
-            }
-        } else {
-            throw new Exception("Não foi possível solucionar");
-        }
+        exportaModelo();
+        exportaResultado();
     }
 
     private void preencheDicionario() {
@@ -166,10 +67,14 @@ public class TeacherScheduleProblem {
         }
     }
 
-    private void instanciaXDH() throws IloException {
+    private void instanciaXDH() {
         for (Disciplina disciplina : grade.getDisciplinasNaoTotalmenteAlocadas()) {
             for (int k = 0; k < config.getQuantidadeHorarios(); k++) {
-                XDH[disciplinaHorarios.get(disciplina.getCodigo())][k] = cplex.numVar(0, 1, IloNumVarType.Int, "x." + disciplina.getCodigo() + "." + k);
+                try {
+                    XDH[disciplinaHorarios.get(disciplina.getCodigo())][k] = cplex.numVar(0, 1, IloNumVarType.Int, "x." + disciplina.getCodigo() + "." + k);
+                } catch (IloException ex) {
+                    Logger.getLogger(TeacherScheduleProblem.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         }
     }
@@ -186,6 +91,180 @@ public class TeacherScheduleProblem {
                     }
                 }
             }
+        }
+    }
+
+    private void instanciaCplex() {
+        try {
+            cplex = new IloCplex();
+        } catch (IloException ex) {
+            Logger.getLogger(TeacherScheduleProblem.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void setaParametroCplexPreSolucao() {
+        try {
+            cplex.setParam(IloCplex.BooleanParam.PreInd, false);
+        } catch (IloException ex) {
+            Logger.getLogger(TeacherScheduleProblem.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void criaInstanciaVariaveis() {
+        XDH = new IloNumVar[grade.getDisciplinasNaoTotalmenteAlocadas().size()][config.getQuantidadeHorarios()];
+        instanciaXDH();
+    }
+
+    private void criaInstanciaIndisponibilidade() {
+        IDHdata = new double[grade.getDisciplinasNaoTotalmenteAlocadas().size()][config.getQuantidadeHorarios()];
+        instanciaIDHedataPreenche();
+    }
+
+    private void criaFuncaoObjetivo() {
+        try {
+            IloLinearNumExpr objetive = cplex.linearNumExpr();
+
+            for (int j = 0; j < grade.getDisciplinasNaoTotalmenteAlocadas().size(); j++) {
+                for (int k = 0; k < config.getQuantidadeHorarios(); k++) {
+                    objetive.addTerm(1, XDH[j][k]);
+                }
+            }
+            cplex.addMinimize(objetive);
+        } catch (IloException ex) {
+            Logger.getLogger(TeacherScheduleProblem.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void criaRestricoes() {
+        criaRestricaoIndisponibilidade();
+        criaRestricaoAulaMesmoHorarioPeriodo();
+        criaRestricaoAulaMesmoHorarioProfessor();
+        criaRestricaoAlocacaoTotalAulas();
+        criaRestricaoQuantiadeAulaMaximaPorDia();
+    }
+
+    private void criaRestricaoIndisponibilidade() {
+        try {
+            IloLinearNumExpr restricaoA = cplex.linearNumExpr();
+            for (Disciplina disciplina : grade.getDisciplinasNaoTotalmenteAlocadas()) {
+                for (int k = 0; k < config.getQuantidadeHorarios(); k++) {
+                    restricaoA.addTerm(XDH[disciplinaHorarios.get(disciplina.getCodigo())][k], IDHdata[disciplinaHorarios.get(disciplina.getCodigo())][k]);
+                }
+            }
+            cplex.addEq(restricaoA, 0).setName("Indisponibilidade");
+        } catch (IloException ex) {
+            Logger.getLogger(TeacherScheduleProblem.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void criaRestricaoAulaMesmoHorarioPeriodo() {
+        for (int k = 0; k < config.getQuantidadeHorarios(); k++) {
+            for (Periodo periodo : grade.getPeriodos()) {
+                try {
+                    IloLinearNumExpr restricaoDisciplinasDoPeriodoMesmoHorario = cplex.linearNumExpr();
+                    for (Disciplina disciplina : grade.getDisciplinasNaoTotalmenteAlocadasEmUmPeriodo(periodo.getNumeroPeriodo())) {
+                        restricaoDisciplinasDoPeriodoMesmoHorario.addTerm(XDH[disciplinaHorarios.get(disciplina.getCodigo())][k], 1);
+                    }
+                    if (periodo.horarioEstaOcupado(conversor.converteIndiceEmHorario(k))) {
+                        cplex.addEq(restricaoDisciplinasDoPeriodoMesmoHorario, 0).setName(periodo.getNumeroPeriodo() + "MesmoHorario");
+                    }
+                    cplex.addLe(restricaoDisciplinasDoPeriodoMesmoHorario, 1).setName(periodo.getNumeroPeriodo() + "MesmoHorario");
+                } catch (IloException ex) {
+                    Logger.getLogger(TeacherScheduleProblem.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }
+    }
+
+    private void criaRestricaoAulaMesmoHorarioProfessor() {
+        for (int k = 0; k < config.getQuantidadeHorarios(); k++) {
+            for (Professor professor : grade.getProfessores()) {
+                try {
+                    IloLinearNumExpr restricaoDisciplinasDoProfessorMesmoHorario = cplex.linearNumExpr();
+                    for (Disciplina disciplina : professor.getDisciplinasNaoTotalmenteAlocadas()) {
+                        restricaoDisciplinasDoProfessorMesmoHorario.addTerm(XDH[disciplinaHorarios.get(disciplina.getCodigo())][k], 1);
+                    }
+                    cplex.addLe(restricaoDisciplinasDoProfessorMesmoHorario, 1).setName(professor.getNome() + "MesmoHorario");
+                } catch (IloException ex) {
+                    Logger.getLogger(TeacherScheduleProblem.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }
+    }
+
+    private void criaNomeRestricao() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    private void criaRestricaoAlocacaoTotalAulas() {
+        for (Disciplina disciplina : grade.getDisciplinasNaoTotalmenteAlocadas()) {
+            try {
+                IloLinearNumExpr restricaoAlocacaoTotal = cplex.linearNumExpr();
+                for (int k = 0; k < config.getQuantidadeHorarios(); k++) {
+                    restricaoAlocacaoTotal.addTerm(XDH[disciplinaHorarios.get(disciplina.getCodigo())][k], 1);
+                }
+                cplex.addEq(restricaoAlocacaoTotal, disciplina.getCreditosAAlocar()).setName(disciplina.getCodigo() + "AlocacaoTotal");
+            } catch (IloException ex) {
+                Logger.getLogger(TeacherScheduleProblem.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+
+    private void criaRestricaoQuantiadeAulaMaximaPorDia() {
+        for (Disciplina disciplina : grade.getDisciplinasNaoTotalmenteAlocadas()) {
+            for (int dia = 0; dia < config.quantidadeDias; dia++) {
+                try {
+                    IloLinearNumExpr restricaoAulaMesmoDia = cplex.linearNumExpr();
+                    List<Horario> horariosMesmoDia = Horario.montaListaHorarios(dia, 0, config.quantidadeHoras - 1);
+                    for (Horario horario : horariosMesmoDia) {
+                        restricaoAulaMesmoDia.addTerm(XDH[disciplinaHorarios.get(disciplina.getCodigo())][conversor.converteHorarioEmIndice(horario)], 1);
+                    }
+                    Periodo periodo = grade.getPeriodoPorNumero(disciplina.getPeriodo());
+                    if (periodo.temADisciplinaNoDia(disciplina, dia)) {
+                        cplex.addEq(restricaoAulaMesmoDia, 0).setName(disciplina.getCodigo() + "SameDay");
+                    } else {
+                        cplex.addLe(restricaoAulaMesmoDia, disciplina.quantidadeHorariosTentativaInsercao()).setName(disciplina.getCodigo() + "SameDay");
+                    }
+                } catch (IloException ex) {
+                    Logger.getLogger(TeacherScheduleProblem.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }
+    }
+
+    private void exportaResultado() {
+        try {
+            if (cplex.solve()) {
+                for (Map.Entry<String, Integer> pair : disciplinaHorarios.entrySet()) {
+                    for (int k = 0; k < config.getQuantidadeHorarios(); k++) {
+                        int indexAcessoDisciplina = pair.getValue();
+                        if (cplex.getValue(XDH[indexAcessoDisciplina][k]) == 1.0) {
+                            ArrayList<Horario> horarios = new ArrayList<>();
+                            horarios.add(conversor.converteIndiceEmHorario(k));
+
+                            Disciplina disciplina = grade.getDisciplinaPorCodigo(pair.getKey());
+                            Periodo periodo = grade.getPeriodoPorNumero(disciplina.getPeriodo());
+                            Professor professor = grade.getProfessorDaDisciplina(disciplina);
+
+                            grade.inserirDisciplinaNaGrade(new InsercaoGradeHorarios(professor, disciplina, horarios, periodo));
+                        }
+                    }
+                }
+
+                if (grade.aSolucaoEstaPronta()) {
+                    grade.gerarSaidaArquivo();
+                }
+            }
+        } catch (IloException ex) {
+            Logger.getLogger(TeacherScheduleProblem.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void exportaModelo() {
+        try {
+            cplex.exportModel("teacher.lp");
+        } catch (IloException ex) {
+            Logger.getLogger(TeacherScheduleProblem.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
