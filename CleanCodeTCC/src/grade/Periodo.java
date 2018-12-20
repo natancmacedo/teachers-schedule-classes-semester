@@ -14,14 +14,14 @@ import java.util.ArrayList;
  */
 public class Periodo {
 
-    private Integer numeroPeriodo;
+    private final Integer NUMERO_PERIODO;
     private Disciplina[][] horarioPeriodo;
     private DisponibilidadePeriodo disponibilidadePeriodo;
 
-    public Periodo(Integer numero, Integer quantidadeDias, Integer quantidadeHoras) {
-        this.numeroPeriodo = numero;
-        this.inicializaDisponibilidadePeriodo(quantidadeDias, quantidadeHoras);
-        this.inicializaHorarioPeriodo(quantidadeDias, quantidadeHoras);
+    public Periodo(Integer numero, ConfiguracaoGrade config) {
+        this.NUMERO_PERIODO = numero;
+        this.inicializaDisponibilidadePeriodo(config.QUANTIDADE_DIAS, config.QUANTIDADE_HORAS);
+        this.inicializaHorarioPeriodo(config.QUANTIDADE_DIAS, config.QUANTIDADE_HORAS);
     }
 
     private void inicializaDisponibilidadePeriodo(Integer quantidadeDias, Integer quantidadeHoras) {
@@ -52,7 +52,7 @@ public class Periodo {
     public ArrayList<Professor> professoresDisputandoHorario(Horario horario, ArrayList<Professor> professores) {
         ArrayList<Professor> professoresHorario = new ArrayList<>();
         for (Professor professor : professores) {
-            if (professor.temAlgumaDisciplinaNoPeriodo(this.numeroPeriodo) && professor.estaDisponivelNoHorario(horario)) {
+            if (professor.temAlgumaDisciplinaNoPeriodo(this.NUMERO_PERIODO) && professor.estaDisponivelNoHorario(horario)) {
                 professoresHorario.add(professor);
             }
         }
@@ -96,7 +96,7 @@ public class Periodo {
     }
 
     public Integer getNumeroPeriodo() {
-        return this.numeroPeriodo;
+        return this.NUMERO_PERIODO;
     }
 
     public Integer quantidadeLocaisPossiveisInsercao() {

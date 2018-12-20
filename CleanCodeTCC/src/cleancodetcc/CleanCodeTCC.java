@@ -6,7 +6,9 @@
 package cleancodetcc;
 
 import CPLEX.*;
+import grade.ConfiguracaoGrade;
 import grade.GradeHorarios;
+import grade.InformacoesArquivo;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
@@ -19,10 +21,18 @@ public class CleanCodeTCC extends Application {
     @Override
     public void start(Stage stage) throws Exception {
 
-        GradeHorarios grade = new GradeHorarios(9, 6, 5);
-        grade.inicializarProblema("../dados/DadosReunidos.ods", "Disponibilidade", "Disciplinas");
+        ConfiguracaoGrade config = new ConfiguracaoGrade(9, 6, 5);
+        GradeHorarios grade = new GradeHorarios(config);
 
-        new TeacherScheduleProblem().main(grade);
+        InformacoesArquivo infoFile = new InformacoesArquivo("../dados/DadosReunidos.ods",
+                "Disponibilidade",
+                "Disciplinas",
+                "ResultadoProfessor",
+                "ResultadoPeriodo");
+
+        grade.preencherDadosProblema(infoFile);
+
+        new TeacherScheduleProblem(grade).begin();
 
         System.exit(0);
     }

@@ -17,7 +17,6 @@ public class Disciplina {
     private final String nome;
     private final Integer creditos;
     private final Integer periodo;
-
     private String apelido;
     private Integer creditosAlocados;
 
@@ -33,7 +32,7 @@ public class Disciplina {
         this.nome = nome;
         this.creditos = creditos;
         this.periodo = periodo;
-        this.populaAlgarismosRomanos();
+        populaAlgarismosRomanos();
         this.createApelido();
         this.creditosAlocados = 0;
     }

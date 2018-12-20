@@ -10,10 +10,10 @@ public class Professor {
     private Disciplina[][] horarioPessoal;
 
     public Professor(String nome, DisponibilidadeProfessor disponibilidade,
-            Integer quantidadeDias, Integer quantidadeHoras) {
+            ConfiguracaoGrade config) {
         this.nome = nome;
         this.disponibilidade = disponibilidade;
-        this.horarioPessoal = new Disciplina[quantidadeHoras][quantidadeDias];
+        this.horarioPessoal = new Disciplina[config.QUANTIDADE_HORAS][config.QUANTIDADE_DIAS];
         this.disciplinas = new ArrayList<>();
 
     }
@@ -111,5 +111,17 @@ public class Professor {
 
     public Disciplina[][] getHorarioPessoal() {
         return this.horarioPessoal;
+    }
+
+    public ArrayList<Disciplina> getDisciplinasNaoTotalmenteAlocadas() {
+        ArrayList<Disciplina> disciplinasNaoTotalmenteAlocadas = new ArrayList<>();
+
+        for (Disciplina disciplina : this.disciplinas) {
+            if (!disciplina.estaTotalmenteAlocada()) {
+                disciplinasNaoTotalmenteAlocadas.add(disciplina);
+            }
+        }
+
+        return disciplinasNaoTotalmenteAlocadas;
     }
 }

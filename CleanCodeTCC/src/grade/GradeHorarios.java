@@ -7,6 +7,8 @@ package grade;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -14,38 +16,62 @@ import java.util.ArrayList;
  */
 public class GradeHorarios {
 
+    public ConfiguracaoGrade config;
     private Periodo[] periodos;
-    private final Integer quantidadePeriodos;
-
-    public final Integer quantidadeDias;
-    public final Integer quantidadeHoras;
 
     private ArrayList<Professor> professores;
     private ArrayList<Disciplina> disciplinas;
     private ArquivoDados arquivo;
 
-    public GradeHorarios(Integer quantidadePeriodos, Integer quantidadeDias, Integer quantidadeHoras) {
-        this.quantidadePeriodos = quantidadePeriodos;
-        this.quantidadeDias = quantidadeDias;
-        this.quantidadeHoras = quantidadeHoras;
-        this.periodos = new Periodo[quantidadePeriodos];
+    public GradeHorarios(ConfiguracaoGrade config) {
+        this.config = config;
+        this.periodos = new Periodo[config.QUANTIDADE_PERIODOS];
 
-        for (int periodo = 0; periodo < quantidadePeriodos; periodo++) {
-            this.periodos[periodo] = new Periodo(periodo + 1, quantidadeDias, quantidadeHoras);
+        for (int periodo = 0; periodo < config.QUANTIDADE_PERIODOS; periodo++) {
+            this.periodos[periodo] = new Periodo(periodo + 1, config);
         }
 
         this.professores = new ArrayList<>();
         this.disciplinas = new ArrayList<>();
-
     }
 
-    public void inicializarProblema(String arquivoDados, String abaDisponibilidade, String abaDisciplina) {
+    public void preencherDadosProblema(InformacoesArquivo informacoesArquivo) {
 
-        this.arquivo = new ArquivoDados(arquivoDados, abaDisponibilidade, abaDisciplina, this.quantidadeDias, this.quantidadeHoras);
+        this.arquivo = new ArquivoDados(informacoesArquivo, config);
         arquivo.LeDadosProfessoresEDisciplinas();
         this.professores = arquivo.getProfessores();
         this.disciplinas = arquivo.getDisciplinas();
+
+        insereDisciplinasDoArquivo();
+
         this.calcularDisponibilidadesPeriodos();
+    }
+
+    private void insereDisciplinasDoArquivo() {
+        ArrayList<DadosInsercaoDisciplinaArquivo> disciplinasInserir = arquivo.getInsercaoDiretaDoArquivo();
+
+        for (DadosInsercaoDisciplinaArquivo dadosDisciplina : disciplinasInserir) {
+            InsercaoGradeHorarios novaInsercao = converterDadosArquivoParaInsercao(dadosDisciplina);
+            this.inserirDisciplinaNaGrade(novaInsercao);
+        }
+    }
+
+    private InsercaoGradeHorarios converterDadosArquivoParaInsercao(DadosInsercaoDisciplinaArquivo dadosDisciplina) {
+        InsercaoGradeHorarios novaInsercao = new InsercaoGradeHorarios();
+
+        Disciplina disciplina = this.getDisciplinaPorCodigo(dadosDisciplina.codigoDisciplina);
+        Periodo periodo = this.getPeriodoPorNumero(disciplina.getPeriodo());
+        Professor professor = this.getProfessorDaDisciplina(disciplina);
+
+        ArrayList<Horario> horarios = new ArrayList<>();
+        horarios.add(dadosDisciplina.horario);
+
+        novaInsercao.setDisciplina(disciplina);
+        novaInsercao.setPeriodo(periodo);
+        novaInsercao.setHorarios(horarios);
+        novaInsercao.setProfessor(professor);
+
+        return novaInsercao;
     }
 
     public void inserirDisciplinaNaGrade(InsercaoGradeHorarios novaInsercao) {
@@ -59,6 +85,12 @@ public class GradeHorarios {
                 novaInsercao.getDisciplina().addCreditosAlocados();
             }
 
+        } else {
+            try {
+                throw new Exception("Não é possível inserir " + novaInsercao);
+            } catch (Exception ex) {
+                Logger.getLogger(GradeHorarios.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }
 
@@ -147,7 +179,7 @@ public class GradeHorarios {
         return disciplinasDoPeriodo;
     }
 
-    public Professor qualProfessorTemADisciplina(Disciplina disciplina) {
+    public Professor getProfessorDaDisciplina(Disciplina disciplina) {
         for (Professor professor : this.professores) {
             if (professor.temADisciplina(disciplina)) {
                 return professor;
@@ -168,10 +200,6 @@ public class GradeHorarios {
 
     public Periodo[] getPeriodos() {
         return periodos;
-    }
-
-    public Integer getQuantidadeDias() {
-        return quantidadeDias;
     }
 
     public ArrayList<Professor> getProfessores() {
