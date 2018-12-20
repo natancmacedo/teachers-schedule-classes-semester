@@ -18,7 +18,7 @@ public final class DisponibilidadePeriodo extends Disponibilidade {
     }
 
     public void somaDisponbilidade(Matrix disponibilidade) {
-        this.disponibilidade.plusEquals(disponibilidade);
+        this.matrizDisponibilidade.plusEquals(disponibilidade);
     }
 
     public double quantidadeProfessoresDisputandoHorario(Horario horario) {
@@ -26,7 +26,7 @@ public final class DisponibilidadePeriodo extends Disponibilidade {
     }
 
     public void zerarDisponibilidade() {
-        this.disponibilidade.timesEquals(0);
+        this.matrizDisponibilidade.timesEquals(0);
     }
 
     public Integer quantidadeDisponibilidadesDiferentesZero() {

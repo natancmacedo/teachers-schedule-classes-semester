@@ -30,7 +30,7 @@ public final class DisponibilidadeProfessor extends Disponibilidade {
 
         for (int hora = 0; hora < super.getQuantidadeHoras(); hora++) {
             for (int dia = 0; dia < super.getQuantidadeDias(); dia++) {
-                disponibilidadeTotal += disponibilidade.getArrayCopy()[hora][dia];
+                disponibilidadeTotal += matrizDisponibilidade.getArrayCopy()[hora][dia];
             }
         }
 

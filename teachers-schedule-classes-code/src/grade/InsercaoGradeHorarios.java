@@ -5,7 +5,7 @@
  */
 package grade;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -15,14 +15,14 @@ public class InsercaoGradeHorarios {
 
     private Professor professor;
     private Disciplina disciplina;
-    private ArrayList<Horario> horarios;
+    private List<Horario> horarios;
     private Periodo periodo;
 
     public InsercaoGradeHorarios() {
 
     }
 
-    public InsercaoGradeHorarios(Professor professor, Disciplina disciplina, ArrayList<Horario> horarios, Periodo periodo) {
+    public InsercaoGradeHorarios(Professor professor, Disciplina disciplina, List<Horario> horarios, Periodo periodo) {
         this.professor = professor;
         this.disciplina = disciplina;
         this.horarios = horarios;
@@ -37,7 +37,7 @@ public class InsercaoGradeHorarios {
         return disciplina;
     }
 
-    public ArrayList<Horario> getHorarios() {
+    public List<Horario> getHorarios() {
         return horarios;
     }
 
@@ -53,7 +53,7 @@ public class InsercaoGradeHorarios {
         this.disciplina = disciplina;
     }
 
-    public void setHorarios(ArrayList<Horario> horarios) {
+    public void setHorarios(List<Horario> horarios) {
         this.horarios = horarios;
     }
 

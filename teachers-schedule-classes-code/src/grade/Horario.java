@@ -6,6 +6,7 @@
 package grade;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -21,8 +22,8 @@ public final class Horario {
         this.hora = hora;
     }
 
-    public static ArrayList<Horario> montaListaHorarios(Integer dia, Integer horaInicial, Integer horaFinal) {
-        ArrayList<Horario> horarios = new ArrayList<>();
+    public static List<Horario> montaListaHorarios(Integer dia, Integer horaInicial, Integer horaFinal) {
+        List<Horario> horarios = new ArrayList<>();
 
         for (int hora = horaInicial; hora <= horaFinal; hora++) {
             horarios.add(new Horario(dia, hora));

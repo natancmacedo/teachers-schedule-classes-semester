@@ -20,6 +20,7 @@ import ilog.concert.IloNumVarType;
 import ilog.cplex.IloCplex;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -113,9 +114,9 @@ public class TeacherScheduleProblem {
         //final restricao A
         //restricao mesmo dia aula
         for (Disciplina disciplina : grade.getDisciplinasNaoTotalmenteAlocadas()) {
-            for (int dia = 0; dia < config.QUANTIDADE_DIAS; dia++) {
+            for (int dia = 0; dia < config.quantidadeDias; dia++) {
                 IloLinearNumExpr restricaoAulaMesmoDia = cplex.linearNumExpr();
-                ArrayList<Horario> horariosMesmoDia = Horario.montaListaHorarios(dia, 0, config.QUANTIDADE_HORAS - 1);
+                List<Horario> horariosMesmoDia = Horario.montaListaHorarios(dia, 0, config.quantidadeHoras - 1);
                 for (Horario horario : horariosMesmoDia) {
                     restricaoAulaMesmoDia.addTerm(XDH[disciplinaHorarios.get(disciplina.getCodigo())][conversor.converteHorarioEmIndice(horario)], 1);
                 }
@@ -151,7 +152,7 @@ public class TeacherScheduleProblem {
             }
 
             if (grade.aSolucaoEstaPronta()) {
-                grade.GerarSaidaArquivo();
+                grade.gerarSaidaArquivo();
             }
         } else {
             throw new Exception("Não foi possível solucionar");

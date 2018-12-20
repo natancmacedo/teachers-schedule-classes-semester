@@ -19,37 +19,36 @@ import org.jopendocument.dom.spreadsheet.SpreadSheet;
  */
 public class InformacoesArquivo {
 
-    public final String CAMINHO_ARQUIVO_DADOS;
-    public final String NOME_ABA_PROFESSORES;
-    public final String NOME_ABA_DISCIPLINAS;
-    public final String NOME_ABA_RESULTADOS_PROFESSORES;
-    public final String NOME_ABA_RESULTADOS_PERIODOS;
+    public final String caminhoArquivoDados;
+    public final String nomeAbaProfessores;
+    public final String nomeAbaDisciplinas;
+    public final String nomeAbaResultadosProfessores;
+    public final String nomeAbaResultadosPeriodos;
 
     private File arquivo = null;
     private SpreadSheet planilha = null;
     private HashMap<String, Sheet> dicionarioAbasPlanilha;
 
-    public InformacoesArquivo(String CAMINHO_ARQUIVO_DADOS, String NOME_ABA_PROFESSORES, String NOME_ABA_DISCIPLINAS,
-            String NOME_ABA_RESULTADOS_PROFESSORES, String NOME_ABA_RESULTADOS_PERIODOS) {
-        this.CAMINHO_ARQUIVO_DADOS = CAMINHO_ARQUIVO_DADOS;
-        this.NOME_ABA_PROFESSORES = NOME_ABA_PROFESSORES;
-        this.NOME_ABA_DISCIPLINAS = NOME_ABA_DISCIPLINAS;
-        this.NOME_ABA_RESULTADOS_PROFESSORES = NOME_ABA_RESULTADOS_PROFESSORES;
-        this.NOME_ABA_RESULTADOS_PERIODOS = NOME_ABA_RESULTADOS_PERIODOS;
+    public InformacoesArquivo(String caminhoArquivoDados, String nomeAbaProfessores, String nomeAbaDisciplinas, String nomeAbaResultadosProfessores, String nomeAbaResultadosPeriodos) {
+        this.caminhoArquivoDados = caminhoArquivoDados;
+        this.nomeAbaProfessores = nomeAbaProfessores;
+        this.nomeAbaDisciplinas = nomeAbaDisciplinas;
+        this.nomeAbaResultadosProfessores = nomeAbaResultadosProfessores;
+        this.nomeAbaResultadosPeriodos = nomeAbaResultadosPeriodos;
         preencheDicionarioAbasPlanilha();
     }
 
     private void preencheDicionarioAbasPlanilha() {
         dicionarioAbasPlanilha = new HashMap<>();
-        dicionarioAbasPlanilha.put(NOME_ABA_PROFESSORES, null);
-        dicionarioAbasPlanilha.put(NOME_ABA_DISCIPLINAS, null);
-        dicionarioAbasPlanilha.put(NOME_ABA_RESULTADOS_PROFESSORES, null);
-        dicionarioAbasPlanilha.put(NOME_ABA_RESULTADOS_PERIODOS, null);
+        dicionarioAbasPlanilha.put(nomeAbaProfessores, null);
+        dicionarioAbasPlanilha.put(nomeAbaDisciplinas, null);
+        dicionarioAbasPlanilha.put(nomeAbaResultadosProfessores, null);
+        dicionarioAbasPlanilha.put(nomeAbaResultadosPeriodos, null);
     }
 
     public File getArquivo() {
         if (arquivo == null) {
-            arquivo = new File(this.CAMINHO_ARQUIVO_DADOS);
+            arquivo = new File(this.caminhoArquivoDados);
         }
         return arquivo;
     }

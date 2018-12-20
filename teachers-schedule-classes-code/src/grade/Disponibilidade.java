@@ -13,18 +13,18 @@ import Jama.Matrix;
  */
 public class Disponibilidade {
 
-    protected Matrix disponibilidade;
+    protected Matrix matrizDisponibilidade;
 
     public Disponibilidade(Matrix disponibilidade) {
-        this.disponibilidade = disponibilidade;
+        this.matrizDisponibilidade = disponibilidade;
     }
 
     public Matrix getDisponibilidade() {
-        return disponibilidade;
+        return matrizDisponibilidade;
     }
 
     public double[][] getDisponibilidadeArray() {
-        return disponibilidade.getArray();
+        return matrizDisponibilidade.getArray();
     }
 
     protected double getDisponibilidadeNoHorario(Horario horario) {
@@ -32,7 +32,7 @@ public class Disponibilidade {
     }
 
     public double getDisponibilidadeNoHorario(Integer dia, Integer hora) {
-        return this.disponibilidade.getArray()[hora][dia];
+        return this.matrizDisponibilidade.getArray()[hora][dia];
     }
 
     protected Double getDisponibilidadeNoHorarioDouble(Integer dia, Integer hora) {
@@ -41,7 +41,7 @@ public class Disponibilidade {
     }
 
     private void setDisponibilidadeNoHorario(Horario horario, double valor) {
-        this.disponibilidade.getArray()[horario.hora][horario.dia] = valor;
+        this.matrizDisponibilidade.getArray()[horario.hora][horario.dia] = valor;
     }
 
     protected void zeraDisponibilidadeNoHorario(Horario horario) {
@@ -49,11 +49,11 @@ public class Disponibilidade {
     }
 
     protected Integer getQuantidadeHoras() {
-        return disponibilidade.getArray().length;
+        return matrizDisponibilidade.getArray().length;
     }
 
     protected Integer getQuantidadeDias() {
-        return disponibilidade.getArray()[0].length;
+        return matrizDisponibilidade.getArray()[0].length;
     }
 
 }

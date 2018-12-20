@@ -5,8 +5,9 @@
  */
 package grade;
 
-import java.io.IOException;
+import cplex.NaoFoiPossivelInserirGradeException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -25,9 +26,9 @@ public class GradeHorarios {
 
     public GradeHorarios(ConfiguracaoGrade config) {
         this.config = config;
-        this.periodos = new Periodo[config.QUANTIDADE_PERIODOS];
+        this.periodos = new Periodo[config.quantidadePeriodos];
 
-        for (int periodo = 0; periodo < config.QUANTIDADE_PERIODOS; periodo++) {
+        for (int periodo = 0; periodo < config.quantidadePeriodos; periodo++) {
             this.periodos[periodo] = new Periodo(periodo + 1, config);
         }
 
@@ -38,7 +39,7 @@ public class GradeHorarios {
     public void preencherDadosProblema(InformacoesArquivo informacoesArquivo) {
 
         this.arquivo = new ArquivoDados(informacoesArquivo, config);
-        arquivo.LeDadosProfessoresEDisciplinas();
+        arquivo.leDadosProfessoresEDisciplinas();
         this.professores = arquivo.getProfessores();
         this.disciplinas = arquivo.getDisciplinas();
 
@@ -48,7 +49,7 @@ public class GradeHorarios {
     }
 
     private void insereDisciplinasDoArquivo() {
-        ArrayList<DadosInsercaoDisciplinaArquivo> disciplinasInserir = arquivo.getInsercaoDiretaDoArquivo();
+        List<DadosInsercaoDisciplinaArquivo> disciplinasInserir = arquivo.getInsercaoDiretaDoArquivo();
 
         for (DadosInsercaoDisciplinaArquivo dadosDisciplina : disciplinasInserir) {
             InsercaoGradeHorarios novaInsercao = converterDadosArquivoParaInsercao(dadosDisciplina);
@@ -77,7 +78,7 @@ public class GradeHorarios {
     public void inserirDisciplinaNaGrade(InsercaoGradeHorarios novaInsercao) {
         if (this.ehPossivelInserirDisciplina(novaInsercao)) {
 
-            ArrayList<Horario> horarios = novaInsercao.getHorarios();
+            List<Horario> horarios = novaInsercao.getHorarios();
 
             for (Horario horario : horarios) {
                 novaInsercao.getProfessor().setDisciplinaHorarioPessoal(novaInsercao.getDisciplina(), horario);
@@ -87,8 +88,8 @@ public class GradeHorarios {
 
         } else {
             try {
-                throw new Exception("Não é possível inserir " + novaInsercao);
-            } catch (Exception ex) {
+                throw new NaoFoiPossivelInserirGradeException("Não é possível inserir " + novaInsercao);
+            } catch (NaoFoiPossivelInserirGradeException ex) {
                 Logger.getLogger(GradeHorarios.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
@@ -107,7 +108,7 @@ public class GradeHorarios {
     public Boolean ehPossivelInserirDisciplina(InsercaoGradeHorarios tentativa) {
         Boolean disciplinaTotalmenteAlocada = tentativa.getDisciplina().estaTotalmenteAlocada();
 
-        ArrayList<Horario> horarios = tentativa.getHorarios();
+        List<Horario> horarios = tentativa.getHorarios();
 
         Boolean professorDisponivelNosHorarios = tentativa.getProfessor().estaDisponivelNosHorarios(horarios);
         Boolean periodoTemDisciplinaNosHorarios = tentativa.getPeriodo().horariosEstaoOcupados(tentativa.getHorarios());
@@ -158,7 +159,7 @@ public class GradeHorarios {
 
     private Integer quantidadeCreditosAAlocarNoPeriodo(Integer numeroPeriodo) {
         Integer quantidadeCreditosAAlocar = 0;
-        ArrayList<Disciplina> disciplinasDoPeriodo = this.disciplinasDoPeriodo(numeroPeriodo);
+        List<Disciplina> disciplinasDoPeriodo = this.disciplinasDoPeriodo(numeroPeriodo);
 
         for (Disciplina disciplina : disciplinasDoPeriodo) {
             quantidadeCreditosAAlocar += disciplina.getCreditosAAlocar();
@@ -167,7 +168,7 @@ public class GradeHorarios {
         return quantidadeCreditosAAlocar;
     }
 
-    public ArrayList<Disciplina> disciplinasDoPeriodo(Integer numeroPeriodo) {
+    public List<Disciplina> disciplinasDoPeriodo(Integer numeroPeriodo) {
         ArrayList<Disciplina> disciplinasDoPeriodo = new ArrayList<>();
 
         for (Disciplina disciplina : disciplinas) {
@@ -202,15 +203,15 @@ public class GradeHorarios {
         return periodos;
     }
 
-    public ArrayList<Professor> getProfessores() {
+    public List<Professor> getProfessores() {
         return professores;
     }
 
-    public ArrayList<Disciplina> getDisciplinas() {
+    public List<Disciplina> getDisciplinas() {
         return disciplinas;
     }
 
-    public ArrayList<Disciplina> getDisciplinasNaoTotalmenteAlocadas() {
+    public List<Disciplina> getDisciplinasNaoTotalmenteAlocadas() {
         ArrayList<Disciplina> disciplinasNaoAlocadas = new ArrayList<>();
 
         for (Disciplina disciplina : this.disciplinas) {
@@ -222,14 +223,14 @@ public class GradeHorarios {
         return disciplinasNaoAlocadas;
     }
 
-    public void GerarSaidaArquivo() throws IOException {
-        arquivo.GravaResultadosNoArquivo(this);
+    public void gerarSaidaArquivo() {
+        arquivo.gravaResultadosNoArquivo(this);
     }
 
-    public ArrayList<Disciplina> getDisciplinasNaoTotalmenteAlocadasEmUmPeriodo(Integer numeroPeriodo) {
-        ArrayList<Disciplina> disciplinasNaoAlocadas = this.getDisciplinasNaoTotalmenteAlocadas();
+    public List<Disciplina> getDisciplinasNaoTotalmenteAlocadasEmUmPeriodo(Integer numeroPeriodo) {
+        List<Disciplina> disciplinasNaoAlocadas = this.getDisciplinasNaoTotalmenteAlocadas();
 
-        ArrayList<Disciplina> disciplinasNaoAlocadasEmUmPeriodo = new ArrayList<>();
+        List<Disciplina> disciplinasNaoAlocadasEmUmPeriodo = new ArrayList<>();
 
         for (Disciplina disciplina : disciplinasNaoAlocadas) {
             if (disciplina.getPeriodo().equals(numeroPeriodo)) {

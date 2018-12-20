@@ -11,17 +11,17 @@ package grade;
  */
 public class ConfiguracaoGrade {
 
-    public final Integer QUANTIDADE_PERIODOS;
-    public final Integer QUANTIDADE_DIAS;
-    public final Integer QUANTIDADE_HORAS;
+    public final Integer quantidadePeriodos;
+    public final Integer quantidadeDias;
+    public final Integer quantidadeHoras;
 
-    public ConfiguracaoGrade(Integer QUANTIDADE_PERIODOS, Integer QUANTIDADE_DIAS, Integer QUANTIDADE_HORAS) {
-        this.QUANTIDADE_PERIODOS = QUANTIDADE_PERIODOS;
-        this.QUANTIDADE_DIAS = QUANTIDADE_DIAS;
-        this.QUANTIDADE_HORAS = QUANTIDADE_HORAS;
+    public ConfiguracaoGrade(Integer quantidadePeriodos, Integer quantidadeDias, Integer quantidadeHoras) {
+        this.quantidadePeriodos = quantidadePeriodos;
+        this.quantidadeDias = quantidadeDias;
+        this.quantidadeHoras = quantidadeHoras;
     }
 
     public Integer getQuantidadeHorarios() {
-        return QUANTIDADE_DIAS * QUANTIDADE_HORAS;
+        return quantidadeDias * quantidadeHoras;
     }
 }

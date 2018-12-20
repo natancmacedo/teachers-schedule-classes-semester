@@ -7,6 +7,7 @@ package grade;
 
 import Jama.Matrix;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -20,8 +21,8 @@ public class Periodo {
 
     public Periodo(Integer numero, ConfiguracaoGrade config) {
         this.NUMERO_PERIODO = numero;
-        this.inicializaDisponibilidadePeriodo(config.QUANTIDADE_DIAS, config.QUANTIDADE_HORAS);
-        this.inicializaHorarioPeriodo(config.QUANTIDADE_DIAS, config.QUANTIDADE_HORAS);
+        this.inicializaDisponibilidadePeriodo(config.quantidadeDias, config.quantidadeHoras);
+        this.inicializaHorarioPeriodo(config.quantidadeDias, config.quantidadeHoras);
     }
 
     private void inicializaDisponibilidadePeriodo(Integer quantidadeDias, Integer quantidadeHoras) {
@@ -49,14 +50,13 @@ public class Periodo {
         return this.disponibilidadePeriodo.quantidadeProfessoresDisputandoHorario(horario);
     }
 
-    public ArrayList<Professor> professoresDisputandoHorario(Horario horario, ArrayList<Professor> professores) {
-        ArrayList<Professor> professoresHorario = new ArrayList<>();
+    public List<Professor> professoresDisputandoHorario(Horario horario, List<Professor> professores) {
+        List<Professor> professoresHorario = new ArrayList<>();
         for (Professor professor : professores) {
             if (professor.temAlgumaDisciplinaNoPeriodo(this.NUMERO_PERIODO) && professor.estaDisponivelNoHorario(horario)) {
                 professoresHorario.add(professor);
             }
         }
-
         return professoresHorario;
     }
 
@@ -67,7 +67,7 @@ public class Periodo {
         }
     }
 
-    public Boolean horariosEstaoOcupados(ArrayList<Horario> horarios) {
+    public Boolean horariosEstaoOcupados(List<Horario> horarios) {
         for (Horario horario : horarios) {
             if (this.horarioEstaOcupado(horario)) {
                 return true;
@@ -85,7 +85,7 @@ public class Periodo {
         return this.horarioPeriodo[horario.hora][horario.dia];
     }
 
-    public void calcularDisponibilidadePeriodo(Integer numeroPeriodo, ArrayList<Professor> professores) {
+    public void calcularDisponibilidadePeriodo(Integer numeroPeriodo, List<Professor> professores) {
         this.disponibilidadePeriodo.zerarDisponibilidade();
 
         for (Professor professor : professores) {
@@ -117,9 +117,9 @@ public class Periodo {
         return this.disponibilidadePeriodo;
     }
 
-    public ArrayList<Horario> getHorariosDisponiveis(Integer quantidadeHoras) {
+    public List<Horario> getHorariosDisponiveis(Integer quantidadeHoras) {
 
-        ArrayList<Horario> horariosDisponiveis = new ArrayList<>();
+        List<Horario> horariosDisponiveis = new ArrayList<>();
 
         for (int dia = 0; dia < this.getDisponibilidadePeriodo().getQuantidadeDias(); dia++) {
             for (int hora = 0; hora < this.getDisponibilidadePeriodo().getQuantidadeHoras() - quantidadeHoras + 1; hora++) {
@@ -127,7 +127,7 @@ public class Periodo {
                     continue;
                 }
 
-                ArrayList<Horario> tentativaHorarios = Horario.montaListaHorarios(dia, hora, hora + quantidadeHoras - 1);
+                List<Horario> tentativaHorarios = Horario.montaListaHorarios(dia, hora, hora + quantidadeHoras - 1);
 
                 if (!this.horariosEstaoOcupados(tentativaHorarios)) {
                     return tentativaHorarios;

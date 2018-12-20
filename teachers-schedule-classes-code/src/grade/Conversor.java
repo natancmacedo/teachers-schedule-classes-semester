@@ -2,7 +2,7 @@ package grade;
 
 import Jama.Matrix;
 import java.math.BigDecimal;
-import java.util.ArrayList;
+import java.util.List;
 import org.jopendocument.dom.spreadsheet.MutableCell;
 
 public class Conversor {
@@ -13,8 +13,8 @@ public class Conversor {
         this.config = config;
     }
 
-    public DisponibilidadeProfessor CriaDisponibilidade(MutableCell[] rowDisponibilidade,
-            ArrayList<DadosInsercaoDisciplinaArquivo> disciplinasAInserir) {
+    public DisponibilidadeProfessor criaDisponibilidade(MutableCell[] rowDisponibilidade,
+            List<DadosInsercaoDisciplinaArquivo> disciplinasAInserir) {
 
         double[] vetorDisponibilidadeDouble = converteVetorMutableParaDouble(rowDisponibilidade, disciplinasAInserir);
         double[][] disponibilidadeDouble = converteArray1DParaArray2d(vetorDisponibilidadeDouble);
@@ -23,7 +23,7 @@ public class Conversor {
     }
 
     private double[][] converteArray1DParaArray2d(double[] array1d) {
-        double[][] array2d = new double[config.QUANTIDADE_HORAS][config.QUANTIDADE_DIAS];
+        double[][] array2d = new double[config.quantidadeHoras][config.quantidadeDias];
 
         for (int i = 0; i < array1d.length; i++) {
             Horario horario = converteIndiceEmHorario(i);
@@ -33,7 +33,7 @@ public class Conversor {
     }
 
     private double[] converteVetorMutableParaDouble(MutableCell[] rowDisponibilidade,
-            ArrayList<DadosInsercaoDisciplinaArquivo> disciplinasAInserir) {
+            List<DadosInsercaoDisciplinaArquivo> disciplinasAInserir) {
 
         double[] vetorDouble = new double[rowDisponibilidade.length];
 
@@ -66,12 +66,12 @@ public class Conversor {
     }
 
     public Horario converteIndiceEmHorario(int numero) {
-        int dia = (int) Math.floor(numero / (config.QUANTIDADE_DIAS - 1));
-        int hora = numero % (config.QUANTIDADE_DIAS - 1);
+        int dia = (int) numero / (config.quantidadeDias - 1);
+        int hora = numero % (config.quantidadeDias - 1);
         return new Horario(dia, hora);
     }
 
     public int converteHorarioEmIndice(Horario horario) {
-        return horario.hora + (horario.dia) * (config.QUANTIDADE_DIAS - 1);
+        return horario.hora + (horario.dia) * (config.quantidadeDias - 1);
     }
 }

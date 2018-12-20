@@ -1,8 +1,10 @@
 package grade;
 
+import cplex.ProfessorNaoEncontratoException;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.jopendocument.dom.spreadsheet.MutableCell;
@@ -26,17 +28,17 @@ public class ArquivoDados {
         this.conversor = new Conversor(config);
     }
 
-    public void GravaResultadosNoArquivo(GradeHorarios grade) {
-        GravaResultadoPorProfessor(grade);
-        GravaResultadoPorPeriodo(grade);
+    public void gravaResultadosNoArquivo(GradeHorarios grade) {
+        gravaResultadoPorProfessor(grade);
+        gravaResultadoPorPeriodo(grade);
     }
 
-    private void GravaResultadoPorProfessor(GradeHorarios grade) {
+    private void gravaResultadoPorProfessor(GradeHorarios grade) {
 
         int linha = 0;
 
         Sheet resultadoProfessor = informacoesArquivo
-                .getAbaPlanilha(informacoesArquivo.NOME_ABA_RESULTADOS_PROFESSORES);
+                .getAbaPlanilha(informacoesArquivo.nomeAbaResultadosProfessores);
 
         for (Professor professor : grade.getProfessores()) {
 
@@ -52,8 +54,8 @@ public class ArquivoDados {
             Disciplina[][] horarioProfessor = professor.getHorarioPessoal();
             DisponibilidadeProfessor disponibilidadeProfessor = professor.getDisponibilidadeProfessor();
 
-            for (int hora = 0; hora < config.QUANTIDADE_HORAS; hora++) {
-                for (int dia = 0; dia < config.QUANTIDADE_DIAS; dia++) {
+            for (int hora = 0; hora < config.quantidadeHoras; hora++) {
+                for (int dia = 0; dia < config.quantidadeDias; dia++) {
                     if (horarioProfessor[hora][dia] != null) {
                         resultadoProfessor.getCellAt(dia + 1, hora + linha).setValue(horarioProfessor[hora][dia].getCodigo());
                     } else {
@@ -62,7 +64,7 @@ public class ArquivoDados {
                 }
 
             }
-            linha = linha + config.QUANTIDADE_HORAS + 2;
+            linha = linha + config.quantidadeHoras + 2;
         }
 
         File outputFile = informacoesArquivo.getArquivo();
@@ -73,10 +75,10 @@ public class ArquivoDados {
         }
     }
 
-    private void GravaResultadoPorPeriodo(GradeHorarios grade) {
+    private void gravaResultadoPorPeriodo(GradeHorarios grade) {
 
         Sheet resultadoProfessor = informacoesArquivo
-                .getAbaPlanilha(informacoesArquivo.NOME_ABA_RESULTADOS_PERIODOS);
+                .getAbaPlanilha(informacoesArquivo.nomeAbaResultadosPeriodos);
 
         int linha = 0;
 
@@ -91,8 +93,8 @@ public class ArquivoDados {
             Disciplina[][] horarioPeriodo = periodo.getHorarioPeriodo();
             DisponibilidadePeriodo disponibilidadePeriodo = periodo.getDisponibilidadePeriodo();
 
-            for (int hora = 0; hora < config.QUANTIDADE_HORAS; hora++) {
-                for (int dia = 0; dia < config.QUANTIDADE_DIAS; dia++) {
+            for (int hora = 0; hora < config.quantidadeHoras; hora++) {
+                for (int dia = 0; dia < config.quantidadeDias; dia++) {
                     if (horarioPeriodo[hora][dia] != null) {
                         resultadoProfessor.getCellAt(dia + 1, hora + linha).setValue(horarioPeriodo[hora][dia].getCodigo());
                     } else {
@@ -102,7 +104,7 @@ public class ArquivoDados {
 
             }
 
-            linha = linha + config.QUANTIDADE_HORAS + 2;
+            linha = linha + config.quantidadeHoras + 2;
         }
 
         File outputFile = informacoesArquivo.getArquivo();
@@ -113,22 +115,22 @@ public class ArquivoDados {
         }
     }
 
-    public void LeDadosProfessoresEDisciplinas() {
-        LeDadosProfessores();
-        LeDadosDisciplinas();
+    public void leDadosProfessoresEDisciplinas() {
+        leDadosProfessores();
+        leDadosDisciplinas();
     }
 
-    private void LeDadosProfessores() {
+    private void leDadosProfessores() {
         Sheet planilhaDisponibilidade = null;
         planilhaDisponibilidade = informacoesArquivo.
-                getAbaPlanilha(informacoesArquivo.NOME_ABA_PROFESSORES);
+                getAbaPlanilha(informacoesArquivo.nomeAbaProfessores);
 
         int linhas = planilhaDisponibilidade.getRowCount();
 
         for (int linha = 1; linha < linhas; linha++) {
             MutableCell nomeProfessor = planilhaDisponibilidade.getCellAt(0, linha);
             String nomeProfessorString = (String) nomeProfessor.getValue();
-            planilhaDisponibilidade.getRange(informacoesArquivo.CAMINHO_ARQUIVO_DADOS);
+            planilhaDisponibilidade.getRange(informacoesArquivo.caminhoArquivoDados);
 
             MutableCell[] disponibilidade = new MutableCell[config.getQuantidadeHorarios()];
 
@@ -141,19 +143,18 @@ public class ArquivoDados {
             }
 
             DisponibilidadeProfessor disponibilidadeProfessor = conversor
-                    .CriaDisponibilidade(disponibilidade, disciplinasAInserir);
+                    .criaDisponibilidade(disponibilidade, disciplinasAInserir);
             professores.add(new Professor(nomeProfessorString, disponibilidadeProfessor, config));
         }
     }
 
-    private void LeDadosDisciplinas() {
+    private void leDadosDisciplinas() {
 
         Sheet abaDisciplinas = null;
         abaDisciplinas = informacoesArquivo
-                .getAbaPlanilha(informacoesArquivo.NOME_ABA_DISCIPLINAS);
+                .getAbaPlanilha(informacoesArquivo.nomeAbaDisciplinas);
 
         int linhas = abaDisciplinas.getRowCount();
-        int colunas = abaDisciplinas.getColumnCount();
 
         for (int linha = 1; linha < linhas; linha++) {
             MutableCell nomeCell = abaDisciplinas.getCellAt(0, linha);
@@ -188,19 +189,22 @@ public class ArquivoDados {
                 return;
             }
         }
-        System.out.printf("O professor: %s não foi encontrado para a disciplina: %s", nomeProfessor, disciplina.getNome());
-        System.exit(0);
+        try {
+            throw new ProfessorNaoEncontratoException(nomeProfessor, disciplina.getCodigo());
+        } catch (ProfessorNaoEncontratoException ex) {
+            Logger.getLogger(ArquivoDados.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
-    public ArrayList<Professor> getProfessores() {
+    public List<Professor> getProfessores() {
         return this.professores;
     }
 
-    public ArrayList<Disciplina> getDisciplinas() {
+    public List<Disciplina> getDisciplinas() {
         return this.disciplinas;
     }
 
-    public ArrayList<DadosInsercaoDisciplinaArquivo> getInsercaoDiretaDoArquivo() {
+    public List<DadosInsercaoDisciplinaArquivo> getInsercaoDiretaDoArquivo() {
         return this.disciplinasAInserir;
     }
 }

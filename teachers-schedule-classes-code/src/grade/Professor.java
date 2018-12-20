@@ -1,6 +1,7 @@
 package grade;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Professor {
 
@@ -13,7 +14,7 @@ public class Professor {
             ConfiguracaoGrade config) {
         this.nome = nome;
         this.disponibilidade = disponibilidade;
-        this.horarioPessoal = new Disciplina[config.QUANTIDADE_HORAS][config.QUANTIDADE_DIAS];
+        this.horarioPessoal = new Disciplina[config.quantidadeHoras][config.quantidadeDias];
         this.disciplinas = new ArrayList<>();
 
     }
@@ -45,11 +46,11 @@ public class Professor {
             this.horarioPessoal[horario.hora][horario.dia] = disciplina;
             this.disponibilidade.zeraDisponibilidadeNoHorario(horario);
         } else {
-            System.err.println("Profesor não tem a disciplina ou o horário não está disponível");
+            //Lançar exceção
         }
     }
 
-    public Boolean estaDisponivelNosHorarios(ArrayList<Horario> horarios) {
+    public Boolean estaDisponivelNosHorarios(List<Horario> horarios) {
         for (Horario horario : horarios) {
             if (!this.estaDisponivelNoHorario(horario)) {
                 return false;
@@ -105,7 +106,7 @@ public class Professor {
         return null;
     }
 
-    public ArrayList<Disciplina> getDisciplinas() {
+    public List<Disciplina> getDisciplinas() {
         return this.disciplinas;
     }
 
@@ -113,8 +114,8 @@ public class Professor {
         return this.horarioPessoal;
     }
 
-    public ArrayList<Disciplina> getDisciplinasNaoTotalmenteAlocadas() {
-        ArrayList<Disciplina> disciplinasNaoTotalmenteAlocadas = new ArrayList<>();
+    public List<Disciplina> getDisciplinasNaoTotalmenteAlocadas() {
+        List<Disciplina> disciplinasNaoTotalmenteAlocadas = new ArrayList<>();
 
         for (Disciplina disciplina : this.disciplinas) {
             if (!disciplina.estaTotalmenteAlocada()) {
