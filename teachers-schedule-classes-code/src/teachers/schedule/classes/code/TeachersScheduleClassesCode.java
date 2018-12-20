@@ -3,24 +3,24 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package cleancodetcc;
+package teachers.schedule.classes.code;
 
-import CPLEX.*;
+import CPLEX.TeacherScheduleProblem;
 import grade.ConfiguracaoGrade;
 import grade.GradeHorarios;
 import grade.InformacoesArquivo;
-import javafx.application.Application;
-import javafx.stage.Stage;
 
 /**
  *
- * @author natan
+ * @author Natan
  */
-public class CleanCodeTCC extends Application {
+public class TeachersScheduleClassesCode {
 
-    @Override
-    public void start(Stage stage) throws Exception {
-
+    /**
+     * @param args the command line arguments
+     * @throws java.lang.Exception
+     */
+    public static void main(String[] args) throws Exception {
         ConfiguracaoGrade config = new ConfiguracaoGrade(9, 6, 5);
         GradeHorarios grade = new GradeHorarios(config);
 
@@ -33,15 +33,6 @@ public class CleanCodeTCC extends Application {
         grade.preencherDadosProblema(infoFile);
 
         new TeacherScheduleProblem(grade).begin();
-
-        System.exit(0);
-    }
-
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) {
-        launch(args);
     }
 
 }
