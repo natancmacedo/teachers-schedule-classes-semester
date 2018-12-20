@@ -9,7 +9,7 @@ import java.util.HashMap;
 
 /**
  *
- * @author natan
+ * @author Natan Macedo<natancmacedo@gmail.com>
  */
 public class Disciplina {
 

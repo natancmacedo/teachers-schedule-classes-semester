@@ -15,7 +15,7 @@ import org.jopendocument.dom.spreadsheet.SpreadSheet;
 
 /**
  *
- * @author Natan
+ * @author Natan Macedo<natancmacedo@gmail.com>
  */
 public class InformacoesArquivo {
 

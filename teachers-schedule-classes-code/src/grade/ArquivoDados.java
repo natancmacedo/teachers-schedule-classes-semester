@@ -1,5 +1,6 @@
 package grade;
 
+import grade.exceptions.ProfessorNaoEncontradoException;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -9,6 +10,10 @@ import java.util.logging.Logger;
 import org.jopendocument.dom.spreadsheet.MutableCell;
 import org.jopendocument.dom.spreadsheet.Sheet;
 
+/**
+ *
+ * @author Natan Macedo<natancmacedo@gmail.com>
+ */
 public class ArquivoDados {
 
     private final InformacoesArquivo informacoesArquivo;

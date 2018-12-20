@@ -11,7 +11,7 @@ import java.util.List;
 
 /**
  *
- * @author natan
+ * @author Natan Macedo<natancmacedo@gmail.com>
  */
 public class Periodo {
 

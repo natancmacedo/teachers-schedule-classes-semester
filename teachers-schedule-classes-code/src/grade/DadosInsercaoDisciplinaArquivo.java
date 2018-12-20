@@ -7,7 +7,7 @@ package grade;
 
 /**
  *
- * @author Natan
+ * @author Natan Macedo<natancmacedo@gmail.com>
  */
 public class DadosInsercaoDisciplinaArquivo {
 

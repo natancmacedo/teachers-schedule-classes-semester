@@ -5,6 +5,7 @@
  */
 package grade;
 
+import grade.exceptions.NaoFoiPossivelInserirGradeException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -12,7 +13,7 @@ import java.util.logging.Logger;
 
 /**
  *
- * @author natan
+ * @author Natan Macedo<natancmacedo@gmail.com>
  */
 public class GradeHorarios {
 

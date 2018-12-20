@@ -3,25 +3,18 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package grade;
+package grade.exceptions;
 
 /**
  *
- * @author Natan
+ * @author Natan Macedo<natancmacedo@gmail.com>
  */
 public class ProfessorNaoEncontradoException extends Exception {
 
-    /**
-     * Creates a new instance of <code>ProfessorNaoEncontratoException</code>
-     * without detail message.
-     */
     public ProfessorNaoEncontradoException() {
     }
 
     /**
-     * Constructs an instance of <code>ProfessorNaoEncontratoException</code>
-     * with the specified detail message.
-     *
      * @param msg the detail message.
      */
     public ProfessorNaoEncontradoException(String msg) {

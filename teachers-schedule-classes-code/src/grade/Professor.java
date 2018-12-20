@@ -3,6 +3,10 @@ package grade;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ *
+ * @author Natan Macedo<natancmacedo@gmail.com>
+ */
 public class Professor {
 
     private String nome;

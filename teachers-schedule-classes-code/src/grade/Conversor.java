@@ -5,6 +5,10 @@ import java.math.BigDecimal;
 import java.util.List;
 import org.jopendocument.dom.spreadsheet.MutableCell;
 
+/**
+ *
+ * @author Natan Macedo<natancmacedo@gmail.com>
+ */
 public class Conversor {
 
     private final ConfiguracaoGrade config;

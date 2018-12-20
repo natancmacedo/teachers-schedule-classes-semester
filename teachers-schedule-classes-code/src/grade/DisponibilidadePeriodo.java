@@ -9,7 +9,7 @@ import Jama.Matrix;
 
 /**
  *
- * @author natan
+ * @author Natan Macedo<natancmacedo@gmail.com>
  */
 public final class DisponibilidadePeriodo extends Disponibilidade {
 
