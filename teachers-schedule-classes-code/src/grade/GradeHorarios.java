@@ -5,7 +5,6 @@
  */
 package grade;
 
-import cplex.NaoFoiPossivelInserirGradeException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -20,8 +19,8 @@ public class GradeHorarios {
     public ConfiguracaoGrade config;
     private Periodo[] periodos;
 
-    private ArrayList<Professor> professores;
-    private ArrayList<Disciplina> disciplinas;
+    private List<Professor> professores;
+    private List<Disciplina> disciplinas;
     private ArquivoDados arquivo;
 
     public GradeHorarios(ConfiguracaoGrade config) {

@@ -5,7 +5,7 @@
  */
 package teachers.schedule.classes.code;
 
-import cplex.TeacherScheduleProblem;
+import CPLEX.TeacherScheduleProblem;
 import grade.ConfiguracaoGrade;
 import grade.GradeHorarios;
 import grade.InformacoesArquivo;
