@@ -28,8 +28,4 @@ public class NaoFoiPossivelInserirGradeException extends Exception {
     public NaoFoiPossivelInserirGradeException(String msg) {
         super(msg);
     }
-
-    public NaoFoiPossivelInserirGradeException(String nomeProfessor, String codigoDisciplina) {
-        super(String.format("Não foi possível inserir a disciplina na grade", codigoDisciplina));
-    }
 }

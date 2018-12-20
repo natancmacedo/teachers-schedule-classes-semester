@@ -15,12 +15,12 @@ import java.util.List;
  */
 public class Periodo {
 
-    private final Integer NUMERO_PERIODO;
+    private final Integer numeroPeriodo;
     private Disciplina[][] horarioPeriodo;
     private DisponibilidadePeriodo disponibilidadePeriodo;
 
     public Periodo(Integer numero, ConfiguracaoGrade config) {
-        this.NUMERO_PERIODO = numero;
+        this.numeroPeriodo = numero;
         this.inicializaDisponibilidadePeriodo(config.quantidadeDias, config.quantidadeHoras);
         this.inicializaHorarioPeriodo(config.quantidadeDias, config.quantidadeHoras);
     }
@@ -53,7 +53,7 @@ public class Periodo {
     public List<Professor> professoresDisputandoHorario(Horario horario, List<Professor> professores) {
         List<Professor> professoresHorario = new ArrayList<>();
         for (Professor professor : professores) {
-            if (professor.temAlgumaDisciplinaNoPeriodo(this.NUMERO_PERIODO) && professor.estaDisponivelNoHorario(horario)) {
+            if (professor.temAlgumaDisciplinaNoPeriodo(this.numeroPeriodo) && professor.estaDisponivelNoHorario(horario)) {
                 professoresHorario.add(professor);
             }
         }
@@ -96,7 +96,7 @@ public class Periodo {
     }
 
     public Integer getNumeroPeriodo() {
-        return this.NUMERO_PERIODO;
+        return this.numeroPeriodo;
     }
 
     public Integer quantidadeLocaisPossiveisInsercao() {

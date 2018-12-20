@@ -5,7 +5,7 @@
  */
 package teachers.schedule.classes.code;
 
-import CPLEX.TeacherScheduleProblem;
+import cplex.TeacherScheduleProblem;
 import grade.ConfiguracaoGrade;
 import grade.GradeHorarios;
 import grade.InformacoesArquivo;
@@ -18,9 +18,8 @@ public class TeachersScheduleClassesCode {
 
     /**
      * @param args the command line arguments
-     * @throws java.lang.Exception
      */
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         ConfiguracaoGrade config = new ConfiguracaoGrade(9, 6, 5);
         GradeHorarios grade = new GradeHorarios(config);
 

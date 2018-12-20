@@ -63,13 +63,19 @@ public class InsercaoGradeHorarios {
 
     @Override
     public String toString() {
-
-        String horariosStr = "(Hora,Dia)";
-
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("(Hora,Dia)");
         for (Horario horario : horarios) {
-            horariosStr += "(" + horario.hora + ", " + horario.dia + ")";
+            stringBuilder.append("(")
+                    .append(horario.hora)
+                    .append(", ")
+                    .append(horario.dia)
+                    .append(")");
         }
-        return " \t professor=" + professor.getNome() + ", disciplina=" + disciplina.getCodigo() + ", periodo=" + periodo.getNumeroPeriodo() + ", horarios=" + horariosStr;
+        return " \t professor=" + professor.getNome()
+                + ", disciplina=" + disciplina.getCodigo()
+                + ", periodo=" + periodo.getNumeroPeriodo()
+                + ", horarios=" + stringBuilder.toString();
     }
 
 }

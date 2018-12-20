@@ -16,7 +16,7 @@ import java.util.logging.Logger;
  */
 public class GradeHorarios {
 
-    public ConfiguracaoGrade config;
+    public final ConfiguracaoGrade config;
     private Periodo[] periodos;
 
     private List<Professor> professores;

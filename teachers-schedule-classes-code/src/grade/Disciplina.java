@@ -20,12 +20,12 @@ public class Disciplina {
     private String apelido;
     private Integer creditosAlocados;
 
-    private final static String[] ARTIGOS
+    private static final String[] ARTIGOS
             = {
                 "da", "de", "e", "por", "à", "a"
             };
 
-    private static HashMap<String, String> ROMANOS_CONVERTER;
+    private static HashMap<String, String> romanosConverter;
 
     public Disciplina(String codigo, String nome, Integer creditos, Integer periodo) {
         this.codigo = codigo;
@@ -38,25 +38,24 @@ public class Disciplina {
     }
 
     private static void populaAlgarismosRomanos() {
-        ROMANOS_CONVERTER = new HashMap<>();
-        ROMANOS_CONVERTER.put("I", "1");
-        ROMANOS_CONVERTER.put("II", "2");
-        ROMANOS_CONVERTER.put("III", "3");
-        ROMANOS_CONVERTER.put("IV", "4");
-        ROMANOS_CONVERTER.put("V", "5");
+        romanosConverter = new HashMap<>();
+        romanosConverter.put("I", "1");
+        romanosConverter.put("II", "2");
+        romanosConverter.put("III", "3");
+        romanosConverter.put("IV", "4");
+        romanosConverter.put("V", "5");
     }
 
     private void createApelido() {
         String[] nomeVetor = this.nome.split(" ");
-        String apelidoGerado = "";
-
+        StringBuilder stringBuilder = new StringBuilder();
         for (String parte : nomeVetor) {
             if (!this.ehArtigo(parte)) {
-                apelidoGerado += getInicialNomeDaDisciplina(parte);
+                stringBuilder.append(getInicialNomeDaDisciplina(parte));
             }
         }
 
-        this.apelido = apelidoGerado.toUpperCase();
+        this.apelido = stringBuilder.toString().toUpperCase();
     }
 
     private Boolean ehArtigo(String verificar) {
@@ -70,14 +69,14 @@ public class Disciplina {
 
     private String getInicialNomeDaDisciplina(String parte) {
         if (ehRomano(parte)) {
-            return Disciplina.ROMANOS_CONVERTER.get(parte);
+            return Disciplina.romanosConverter.get(parte);
         } else {
             return parte.substring(0, 1);
         }
     }
 
     private Boolean ehRomano(String parte) {
-        return Disciplina.ROMANOS_CONVERTER.containsKey(parte);
+        return Disciplina.romanosConverter.containsKey(parte);
     }
 
     public void addCreditosAlocados() {

@@ -56,8 +56,7 @@ public class Conversor {
     }
 
     private String converteMultableCellParaString(MutableCell cell) {
-        String stringMultableCell = cell.getValue().toString();
-        return stringMultableCell;
+        return cell.getValue().toString();
     }
 
     public Integer conveteMutableCellParaInteiro(MutableCell toNumber) {
@@ -66,7 +65,7 @@ public class Conversor {
     }
 
     public Horario converteIndiceEmHorario(int numero) {
-        int dia = (int) numero / (config.quantidadeDias - 1);
+        int dia = numero / (config.quantidadeDias - 1);
         int hora = numero % (config.quantidadeDias - 1);
         return new Horario(dia, hora);
     }

@@ -19,7 +19,7 @@ public class ArquivoDados {
     private final ArrayList<Disciplina> disciplinas = new ArrayList<>();
     private final ArrayList<DadosInsercaoDisciplinaArquivo> disciplinasAInserir = new ArrayList<>();
 
-    private final String[] DIAS_SEMANA = {"SEG", "TER", "QUAR", "QUI", "SEXT", "SAB"};
+    private static final String[] DIAS_SEMANA = {"SEG", "TER", "QUAR", "QUI", "SEXT", "SAB"};
 
     public ArquivoDados(InformacoesArquivo informacoesArquivo, ConfiguracaoGrade config) {
         this.informacoesArquivo = informacoesArquivo;

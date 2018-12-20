@@ -36,8 +36,7 @@ public class Disponibilidade {
     }
 
     protected Double getDisponibilidadeNoHorarioDouble(Integer dia, Integer hora) {
-        Double disponibilidadeDouble = getDisponibilidadeNoHorario(dia, hora);
-        return disponibilidadeDouble;
+        return getDisponibilidadeNoHorario(dia, hora);
     }
 
     private void setDisponibilidadeNoHorario(Horario horario, double valor) {
