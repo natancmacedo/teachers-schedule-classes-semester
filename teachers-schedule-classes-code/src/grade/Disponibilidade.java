@@ -11,7 +11,7 @@ import Jama.Matrix;
  *
  * @author Natan Macedo<natancmacedo@gmail.com>
  */
-public class Disponibilidade {
+public abstract class Disponibilidade {
 
     protected Matrix matrizDisponibilidade;
 
