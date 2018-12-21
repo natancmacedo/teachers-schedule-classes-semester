@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package cplex;
 
 import grade.ConfiguracaoGrade;
@@ -27,11 +22,11 @@ import java.util.logging.Logger;
 
 /**
  *
- * @author Natan
+ * @author Natan Macedo<natancmacedo@gmail.com>
  */
 public class TeacherScheduleProblem {
 
-    private GradeHorarios grade;
+private GradeHorarios grade;
     private ConfiguracaoGrade config;
     private Conversor conversor;
     private Map<String, Integer> disciplinaHorarios = new HashMap<>();

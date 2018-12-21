@@ -12,7 +12,7 @@ import grade.InformacoesArquivo;
 
 /**
  *
- * @author Natan
+ * @author Natan Macedo<natancmacedo@gmail.com>
  */
 public class TeachersScheduleClassesCode {
 
