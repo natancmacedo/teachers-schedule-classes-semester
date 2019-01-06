@@ -94,7 +94,7 @@ public class Disciplina {
     }
 
     public Integer quantidadeHorariosTentativaInsercao() {
-        Integer quantidadeTentativaInsercaoHorarios = 0;
+        Integer quantidadeTentativaInsercaoHorarios;
         if (creditosAlocados.equals(0)) {
             switch (creditos) {
                 case 5:

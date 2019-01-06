@@ -254,6 +254,9 @@ private GradeHorarios grade;
                 if (grade.aSolucaoEstaPronta()) {
                     grade.gerarSaidaArquivo();
                 }
+                else{
+                    Logger.getLogger(TeacherScheduleProblem.class.getName()).log( Level.WARNING, "A solução não está pronta");
+                }
             }
         } catch (IloException ex) {
             Logger.getLogger(TeacherScheduleProblem.class.getName()).log(Level.SEVERE, null, ex);

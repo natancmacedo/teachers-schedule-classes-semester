@@ -3,6 +3,8 @@ package grade;
 import Jama.Matrix;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.jopendocument.dom.spreadsheet.MutableCell;
 
 /**
@@ -31,7 +33,14 @@ public class Conversor {
 
         for (int i = 0; i < array1d.length; i++) {
             Horario horario = converteIndiceEmHorario(i);
-            array2d[horario.hora][horario.dia] = array1d[i];
+            try{
+                 array2d[horario.hora][horario.dia] = array1d[i];
+            }
+           catch(Exception e)
+           {
+               Logger.getLogger(Conversor.class.getName()).log( Level.WARNING, "A conversão de vetor para matriz deu errado");
+           }
+            
         }
         return array2d;
     }
